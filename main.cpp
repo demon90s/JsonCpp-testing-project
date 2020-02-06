@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <cassert>
+#include "JsonReader.hpp"
 
 void write_example()
 {
@@ -76,11 +77,40 @@ void read_example()
 	std::cout << root["skill"]["book"].asString() << "\n";
 }
 
+void test_JsonReader()
+{
+	JsonReader reader;
+
+	std::string err;
+	bool ret = reader.Parse("testjson.json", err);
+	if (!ret)
+	{
+		std::cout << err << std::endl;
+		return;
+	}
+
+	reader.Print();
+
+	auto v = reader.GetValueFromPath("skill/lang");
+	std::cout << v.asString() << std::endl;
+
+	v = reader.GetValueFromPath("array/@1");
+	std::cout << v.asString() << std::endl;
+
+	v = reader.GetValueFromPath("array/@0");
+	std::cout << v.asInt() << std::endl;
+
+	v = reader.GetValueFromPath("array/@2/number/@0");
+	std::cout << v.asInt() << std::endl;
+}
+
 int main()
 {
 	//write_example();
 
-	read_example();
+	//read_example();
+
+	test_JsonReader();
 
 	return 0;
 }
